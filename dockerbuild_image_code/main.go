@@ -35,7 +35,9 @@ func accessSecretVersion(secretName string) (string, error) {
 
 const (
 	API_KEY            = "projects/alert-flames-286515/secrets/open-weather-api-key/versions/1"
-	API_BASE_URL       = "https://api.openweathermap.org/data/2.5/weather?units=imperial&appid="
+	API_BASE_URL       = "https://api.openweathermap.org/data/2.5/weather?q=" + city + "&appid=" + apiKey
+
+// Instead of the older OneCall 2.5 URL"
 	OPEN_CAGE_API_KEY  = "projects/alert-flames-286515/secrets/open-cage-api-key/versions/1"
 	OPEN_CAGE_BASE_URL = "https://api.opencagedata.com/geocode/v1/json?"
 )
