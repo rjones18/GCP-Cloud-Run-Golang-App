@@ -1,16 +1,18 @@
 terraform {
+  required_version = ">= 1.5.0"
+
   required_providers {
     google = {
       source  = "hashicorp/google"
-      version = "4.49.0"
+      version = ">= 4.46.0"
     }
   }
 }
 
 provider "google" {
   # Configuration options
-  project = "alert-flames-286515"
-  region  = "us-central1"
+  project = var.project_id
+  region  = var.location
   zone    = "us-central1-a"
   #credentials = "keys-tf.json"
 }

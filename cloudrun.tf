@@ -1,43 +1,25 @@
+module "api" {
+  source = "git::https://github.com/rjones18/GCP-CLOUDRUNNER-TERRAFORM-MODULE.git?ref=v1.0.0"
 
-resource "google_cloud_run_service" "example" {
-  name     = "golang-service"
-  location = "us-central1"
+  project_id = var.project_id
+  location   = var.location
+  name       = "my-weather-app"
+  image      = "gcr.io/alert-flames-286515/simple-go-app:addb71f"
+  service_account_email  = google_service_account.cloud_run_sa.email
 
-  template {
-    spec {
-      containers {
-        image = "gcr.io/alert-flames-286515/nodeapp:v2.0"
-      }
-      service_account_name = "test-83@alert-flames-286515.iam.gserviceaccount.com"      
-    }
+  env = {
+    ENVIRONMENT = "dev"
+    LOG_LEVEL   = "info"
   }
 
-  traffic {
-    percent         = 100
-    latest_revision = true
-  }
+  min_instance_count = 0
+  max_instance_count = 5
 
-  autogenerate_revision_name = true
-}
+  # Option A: private service, grant specific callers:
+  # invoker_members = [
+  #   "user:reggie@example.com"
+  # ]
 
-resource "google_cloud_run_service_iam_policy" "public_policy" {
-  project  = "alert-flames-286515"
-  location = google_cloud_run_service.example.location
-  service  = google_cloud_run_service.example.name
-
-  policy_data = data.google_iam_policy.public_binding.policy_data
-}
-
-data "google_iam_policy" "public_binding" {
-  binding {
-    role = "roles/run.invoker"
-
-    members = [
-      "allUsers"
-    ]
-  }
-}
-
-output "service_url" {
-  value = google_cloud_run_service.example.status[0].url
+  # Option B: make it public:
+  # allow_unauthenticated = true
 }
